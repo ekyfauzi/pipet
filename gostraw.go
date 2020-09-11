@@ -25,9 +25,9 @@ func (s *Straw) SetWrite(host string, port string, user string, password string,
 	log.Print("initialize write db...")
 	db, err := gorm.Open(s.Driver, fmt.Sprintf("%s:%s@(%s:%s)/%s?parseTime=true&loc=Local", user, password, host, port, database))
 	if err != nil {
-		panic("failed to connect to write database")
+		panic("Failed to connect to write database")
 	}
-	fmt.Println("successfuly connected to write db")
+	log.Print("successfuly connected to write db")
 
 	s.WriteDatabase = db
 
@@ -42,7 +42,7 @@ func (s *Straw) SetRead(host string, port string, user string, password string, 
 	if err != nil {
 		panic("failed to connect to read database")
 	}
-	fmt.Println("successfuly connected to read db")
+	log.Print("successfuly connected to read db")
 
 	s.ReadDatabase = db
 
