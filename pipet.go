@@ -1,4 +1,4 @@
-package gostraw
+package pipet
 
 import (
 	"fmt"

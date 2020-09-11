@@ -1,4 +1,4 @@
-module github.com/ekyfauzi/gostraw
+module github.com/ekyfauzi/pipet
 
 go 1.14
 
