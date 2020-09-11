@@ -21,7 +21,7 @@ func Init(driver string) *Straw {
 	return &straw
 }
 
-func (s *Straw) SetWrite(driver string, host string, port string, database string, user string, password string) {
+func (s *Straw) SetWrite(host string, port string, database string, user string, password string) {
 	log.Print("initialize write db...")
 	db, err := gorm.Open(s.Driver, fmt.Sprintf("%s:%s@(%s:%s)/%s?parseTime=true&loc=Local", user, password, host, port, database))
 	if err != nil {
@@ -36,7 +36,7 @@ func (s *Straw) SetWrite(driver string, host string, port string, database strin
 	}
 }
 
-func (s *Straw) SetRead(driver string, host string, port string, database string, user string, password string) {
+func (s *Straw) SetRead(host string, port string, database string, user string, password string) {
 	log.Print("initialize read db...")
 	db, err := gorm.Open(s.Driver, fmt.Sprintf("%s:%s@(%s:%s)/%s?parseTime=true&loc=Local", user, password, host, port, database))
 	if err != nil {
