@@ -3,13 +3,14 @@ package pipet
 import (
 	"fmt"
 	"log"
+	"math/rand"
 
 	"github.com/jinzhu/gorm"
 )
 
 type Straw struct {
 	Driver        string
-	ReadDatabase  *gorm.DB
+	ReadDatabases []*gorm.DB
 	WriteDatabase *gorm.DB
 }
 
@@ -31,8 +32,8 @@ func (s *Straw) SetWrite(host string, port string, user string, password string,
 
 	s.WriteDatabase = db
 
-	if s.ReadDatabase == nil {
-		s.ReadDatabase = db
+	if len(s.ReadDatabases) < 1 {
+		s.ReadDatabases = append(s.ReadDatabases, db)
 	}
 }
 
@@ -44,7 +45,7 @@ func (s *Straw) SetRead(host string, port string, user string, password string, 
 	}
 	log.Print("successfuly connected to read db")
 
-	s.ReadDatabase = db
+	s.ReadDatabases = append(s.ReadDatabases, db)
 
 	if s.WriteDatabase == nil {
 		s.WriteDatabase = db
@@ -52,7 +53,8 @@ func (s *Straw) SetRead(host string, port string, user string, password string, 
 }
 
 func (s *Straw) Where(query interface{}, args ...interface{}) *gorm.DB {
-	return s.ReadDatabase.Where(query, args)
+	db := s.selectRead()
+	return db.Where(query, args)
 }
 
 func (s *Straw) Save(value interface{}) *gorm.DB {
@@ -69,4 +71,10 @@ func (s *Straw) Exec(sql string, values ...interface{}) *gorm.DB {
 
 func (s *Straw) Conn() *gorm.DB {
 	return s.WriteDatabase
+}
+
+func (s *Straw) selectRead() *gorm.DB {
+	i := rand.Intn(len(s.ReadDatabases))
+	db := s.ReadDatabases[i]
+	return db
 }
