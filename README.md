@@ -5,6 +5,7 @@ GORM wrapper to connect to read and write databases
 ```go get github.com/ekyfauzi/pipet```
 
 # Usages
+### Connection
 ```go
 import "github.com/ekyfauzi/pipet"
 
@@ -27,3 +28,24 @@ func main() {
   
 }
 ```
+
+### Functions
+Because this library is a wrapper of [GORM](https://github.com/go-gorm/gorm) so basically usages of functions are same.
+```go
+conn.Where()
+conn.Save()
+conn.Create()
+conn.Exec()
+```
+
+If you want to get instance of connection to database, you can use:
+```go
+// Get write connection
+// Return *gorm.DB
+conn.Instance("write")
+
+// Get read connection
+// Return *gorm.DB
+conn.Instance("read")
+```
+then you can use as usual GORM
