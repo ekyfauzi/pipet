@@ -8,21 +8,21 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-type Straw struct {
+type Pipet struct {
 	Driver        string
 	ReadDatabases []*gorm.DB
 	WriteDatabase *gorm.DB
 }
 
-func Init(driver string) *Straw {
-	straw := Straw{
+func Init(driver string) *Pipet {
+	p := Pipet{
 		Driver: driver,
 	}
 
-	return &straw
+	return &p
 }
 
-func (s *Straw) SetWrite(host string, port string, user string, password string, database string) {
+func (s *Pipet) SetWrite(host string, port string, user string, password string, database string) {
 	log.Print("initialize write db...")
 	db, err := gorm.Open(s.Driver, fmt.Sprintf("%s:%s@(%s:%s)/%s?parseTime=true&loc=Local", user, password, host, port, database))
 	if err != nil {
@@ -37,7 +37,7 @@ func (s *Straw) SetWrite(host string, port string, user string, password string,
 	}
 }
 
-func (s *Straw) SetRead(host string, port string, user string, password string, database string) {
+func (s *Pipet) SetRead(host string, port string, user string, password string, database string) {
 	log.Print("initialize read db...")
 	db, err := gorm.Open(s.Driver, fmt.Sprintf("%s:%s@(%s:%s)/%s?parseTime=true&loc=Local", user, password, host, port, database))
 	if err != nil {
@@ -52,28 +52,28 @@ func (s *Straw) SetRead(host string, port string, user string, password string, 
 	}
 }
 
-func (s *Straw) Where(query interface{}, args ...interface{}) *gorm.DB {
+func (s *Pipet) Where(query interface{}, args ...interface{}) *gorm.DB {
 	db := s.selectRead()
 	return db.Where(query, args)
 }
 
-func (s *Straw) Save(value interface{}) *gorm.DB {
+func (s *Pipet) Save(value interface{}) *gorm.DB {
 	return s.WriteDatabase.Save(value)
 }
 
-func (s *Straw) Create(value interface{}) *gorm.DB {
+func (s *Pipet) Create(value interface{}) *gorm.DB {
 	return s.WriteDatabase.Create(value)
 }
 
-func (s *Straw) Exec(sql string, values ...interface{}) *gorm.DB {
+func (s *Pipet) Exec(sql string, values ...interface{}) *gorm.DB {
 	return s.WriteDatabase.Exec(sql, values)
 }
 
-func (s *Straw) Conn() *gorm.DB {
+func (s *Pipet) Conn() *gorm.DB {
 	return s.WriteDatabase
 }
 
-func (s *Straw) selectRead() *gorm.DB {
+func (s *Pipet) selectRead() *gorm.DB {
 	i := rand.Intn(len(s.ReadDatabases))
 	db := s.ReadDatabases[i]
 	return db
