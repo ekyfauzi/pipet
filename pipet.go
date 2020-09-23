@@ -70,9 +70,18 @@ func (s *Pipet) Exec(sql string, values ...interface{}) *gorm.DB {
 }
 
 func (s *Pipet) Conn() *gorm.DB {
+	return s.Instance("write")
+}
+
+func (s *Pipet) Instance(conn string) *gorm.DB {
+	if conn == "read" {
+		return s.selectRead()
+	}
+
 	return s.WriteDatabase
 }
 
+// Private functions
 func (s *Pipet) selectRead() *gorm.DB {
 	i := rand.Intn(len(s.ReadDatabases))
 	db := s.ReadDatabases[i]
